@@ -1,5 +1,6 @@
 package com.iedaas.checklistrequest.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
@@ -26,26 +27,31 @@ public class ChecklistRequest {
     private String title;
 
     @Column(name = "status_id")
-    private int statusId;
+    private int statusId=1;
 
     @Column(name = "created_date")
     private Timestamp createdDate=Timestamp.valueOf(LocalDateTime.now());
 
     @Column(name = "updated_date")
-    private Timestamp updatedDate;
+    private Timestamp updatedDate=Timestamp.valueOf(LocalDateTime.now());
+
+//    @JsonIgnore
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "ownerId", referencedColumnName = "Id")
+    private Owner owner;
 
     public ChecklistRequest() {
     }
 
     public ChecklistRequest(UUID checklistRequestUid, String description, String title,
-                            int statusId, Timestamp createdDate, Timestamp updatedDate)
-    {
+                            int statusId, Timestamp createdDate, Timestamp updatedDate, Owner owner) {
         this.checklistRequestUid = checklistRequestUid;
         this.description = description;
         this.title = title;
         this.statusId = statusId;
         this.createdDate = createdDate;
         this.updatedDate = updatedDate;
+        this.owner = owner;
     }
 
     public UUID getChecklistRequestUid() {
@@ -88,6 +94,14 @@ public class ChecklistRequest {
         this.updatedDate = Timestamp.valueOf(LocalDateTime.now());
     }
 
+    public Owner getOwner() {
+        return owner;
+    }
+
+    public void setOwner(Owner owner) {
+        this.owner = owner;
+    }
+
     @Override
     public String toString() {
         return "ChecklistRequest{" +
@@ -97,6 +111,7 @@ public class ChecklistRequest {
                 ", statusId=" + statusId +
                 ", createdDate=" + createdDate +
                 ", updatedDate=" + updatedDate +
+                ", owner=" + owner +
                 '}';
     }
 }
